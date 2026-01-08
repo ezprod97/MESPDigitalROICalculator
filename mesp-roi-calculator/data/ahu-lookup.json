@@ -1,0 +1,21 @@
+[
+  { "model": "39CQ0608", "airflow": 2070, "power": 1.5 },
+  { "model": "39CQ0609", "airflow": 2880, "power": 2.2 },
+  { "model": "39CQ0711", "airflow": 4140, "power": 3.7 },
+  { "model": "39CQ0811", "airflow": 5130, "power": 3.7 },
+  { "model": "39CQ0912", "airflow": 6210, "power": 5.5 },
+  { "model": "39CQ1015", "airflow": 9540, "power": 7.5 },
+  { "model": "39CQ1117", "airflow": 11790, "power": 11 },
+  { "model": "39CQ1317", "airflow": 15120, "power": 15 },
+  { "model": "39CQ1418", "airflow": 17100, "power": 15 },
+  { "model": "39CQ1420", "airflow": 19260, "power": 18.5 },
+  { "model": "39CQ1621", "airflow": 23580, "power": 18.5 },
+  { "model": "39CQ1822", "airflow": 29340, "power": 18.5 },
+  { "model": "39CQ1825", "airflow": 33750, "power": 30 },
+  { "model": "39CQ2025", "airflow": 36360, "power": 30 },
+  { "model": "39CQ2125", "airflow": 38970, "power": 30 },
+  { "model": "39CQ2226", "airflow": 43380, "power": 30 },
+  { "model": "39CQ2328", "airflow": 48510, "power": 37 },
+  { "model": "39CQ2330", "airflow": 52290, "power": 37 },
+  { "model": "39CQ3438", "airflow": 109440, "power": 90 }
+]

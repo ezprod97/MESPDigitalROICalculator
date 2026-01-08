@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MESP FAH ROI Calculator - AirQuality Technology</title>
+  <link rel="icon" type="image/png" href="assets/icons/1logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Landing Hero Section -->
+  <section id="landingSection" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460]">
+    <div class="text-center px-4 max-w-5xl">
+      <img src="assets/icons/eng_Logo.png" alt="AirQuality Technology" class="h-16 sm:h-20 mx-auto mb-8 brightness-0 invert">
+      <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">FAH MESP ROI Calculator</h1>
+      <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">Compare Media Filters vs MESP Technology for your AHU filtration system</p>
+
+      <p class="text-gray-400 text-sm mb-8">Select your calculation method based on your AHU system type</p>
+
+      <div class="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div class="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+          <button id="startVariable" class="w-full group relative px-8 py-6 bg-gradient-to-r from-[#0077B6] to-[#00B4D8] text-white rounded-xl shadow-2xl hover:shadow-[#0077B6]/50 transition-all duration-300 hover:scale-105 mb-4">
+            <div class="flex flex-col items-center">
+              <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span class="text-xl font-bold">Variable Frequency Fan</span>
+            </div>
+          </button>
+          <div class="text-left text-gray-300 text-sm space-y-2">
+            <p class="font-medium text-white">Use when: You have system pressure & efficiency values</p>
+            <ul class="space-y-1 text-gray-400">
+              <li>• Calculates using: P / (3600 × η × K)</li>
+              <li>• Lower filter resistance → Fan speed reduces → Energy saved</li>
+              <li>• MESP avg. resistance: 45-120 Pa vs Media: 285 Pa</li>
+              <li>• Typical energy savings: 15-25%</li>
+            </ul>
+            <p class="text-xs text-gray-500 mt-3 pt-2 border-t border-white/10">Required inputs: Total Pressure (Pa), Fan Efficiency (η), Mechanical Efficiency (K)</p>
+          </div>
+        </div>
+
+        <div class="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+          <button id="startFixed" class="w-full group relative px-8 py-6 bg-white/10 backdrop-blur border-2 border-white/30 text-white rounded-xl shadow-2xl hover:bg-white/20 transition-all duration-300 hover:scale-105 mb-4">
+            <div class="flex flex-col items-center">
+              <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="text-xl font-bold">Fixed Frequency Fan</span>
+            </div>
+          </button>
+          <div class="text-left text-gray-300 text-sm space-y-2">
+            <p class="font-medium text-white">Use when: You have AHU motor power from spec sheet</p>
+            <ul class="space-y-1 text-gray-400">
+              <li>• Uses known fan motor power (kW) from AHU datasheet</li>
+              <li>• Fan runs at constant speed regardless of resistance</li>
+              <li>• ROI primarily from filter replacement cost savings</li>
+              <li>• MESP 10-year lifespan eliminates replacement costs</li>
+            </ul>
+            <p class="text-xs text-gray-500 mt-3 pt-2 border-t border-white/10">Required inputs: Motor Power (kW) from AHU specification</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-gray-500 text-xs mt-10">Powered by MESP® Micro-electrostatic Precipitation Technology</p>
+    </div>
+  </section>
+
+  <!-- Calculator Section (hidden initially) -->
+  <div id="calculatorSection" class="hidden">
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        <button id="backToLanding" class="flex items-center text-gray-600 hover:text-[#0077B6] transition">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          Back
+        </button>
+        <div class="text-center">
+          <img src="assets/icons/eng_Logo.png" alt="AirQuality Technology" class="h-10 sm:h-12 mx-auto">
+          <p id="fanTypeLabel" class="text-sm text-gray-500 mt-1">Variable Frequency Fan</p>
+        </div>
+        <div class="w-16"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Input Section -->
+      <div class="space-y-4">
+        <!-- Basic Parameters -->
+        <div class="bg-white rounded-lg shadow p-4">
+          <button class="section-toggle w-full flex justify-between items-center text-left" data-section="basic">
+            <h3 class="text-lg font-semibold text-gray-800">Basic Parameters</h3>
+            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div id="section-basic" class="section-content mt-4 space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Air Volume (CMH)
+                <span class="tooltip" data-tip="Total airflow in cubic meters per hour">ⓘ</span>
+              </label>
+              <input type="number" id="airVolume" value="50000" min="1000" max="200000" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Project Type</label>
+              <select id="projectType" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <option value="new">New Project</option>
+                <option value="retrofit">Retrofit</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Currency</label>
+              <select id="currency" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="AED">AED (د.إ)</option>
+                <option value="SAR">SAR (﷼)</option>
+                <option value="CNY">CNY (¥)</option>
+              </select>
+              <p id="exchangeRateInfo" class="text-xs text-gray-400 mt-1">
+                <span class="inline-flex items-center">
+                  <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                  Exchange rates powered by Google Finance API (updated once daily)
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Equipment Cost -->
+        <div class="bg-white rounded-lg shadow p-4">
+          <button class="section-toggle w-full flex justify-between items-center text-left" data-section="equipment">
+            <h3 class="text-lg font-semibold text-gray-800">Equipment Cost</h3>
+            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div id="section-equipment" class="section-content mt-4 space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Media Filter Price ($/CMH)</label>
+              <input type="number" id="mediaPrice" value="0.0214" step="0.0001" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">MESP Price ($/CMH)</label>
+              <input type="number" id="mespPrice" value="0.2143" step="0.0001" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">MESP+ESP Price ($/CMH)</label>
+              <input type="number" id="mespEspPrice" value="0.2429" step="0.0001" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+          </div>
+        </div>
+
+        <!-- Labor Cost -->
+        <div class="bg-white rounded-lg shadow p-4">
+          <button class="section-toggle w-full flex justify-between items-center text-left" data-section="labor">
+            <h3 class="text-lg font-semibold text-gray-800">Labor Cost</h3>
+            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div id="section-labor" class="section-content mt-4 space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Media Installation Fee ($/CMH)</label>
+              <input type="number" id="mediaInstall" value="0.0071" step="0.0001" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">MESP Installation Fee ($/CMH)</label>
+              <input type="number" id="mespInstall" value="0.0114" step="0.0001" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Media Maintenance Frequency (times/year)</label>
+              <input type="number" id="mediaFreq" value="4" min="1" max="12" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">MESP Maintenance Frequency (times/year)</label>
+              <input type="number" id="mespFreq" value="4" min="1" max="12" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+          </div>
+        </div>
+
+        <!-- Energy Parameters -->
+        <div class="bg-white rounded-lg shadow p-4">
+          <button class="section-toggle w-full flex justify-between items-center text-left" data-section="energy">
+            <h3 class="text-lg font-semibold text-gray-800">Energy Parameters</h3>
+            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div id="section-energy" class="section-content mt-4 space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">AHU Total Pressure (Pa)</label>
+              <input type="number" id="totalPressure" value="1200" min="500" max="3000" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Operating Days (days/year)</label>
+              <input type="number" id="operatingDays" value="365" min="1" max="365" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Running Time (hours/day)</label>
+              <input type="number" id="runningTime" value="12" min="1" max="24" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Electricity Price ($/kWh)</label>
+              <input type="number" id="electricityPrice" value="0.143" step="0.001" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+            <!-- Variable Frequency Fan Parameters -->
+            <div id="vfdParams" class="border-t pt-4 mt-4 space-y-4">
+              <p class="text-sm font-medium text-gray-600">Variable Frequency Fan Parameters</p>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Fan Efficiency (η)
+                    <span class="tooltip" data-tip="Fan internal efficiency, typically 0.7-0.85">ⓘ</span>
+                  </label>
+                  <input type="number" id="fanEfficiency" value="0.8" step="0.01" min="0.5" max="1" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Mechanical Efficiency (K)
+                    <span class="tooltip" data-tip="Motor and drive mechanical efficiency, typically 0.85-0.95">ⓘ</span>
+                  </label>
+                  <input type="number" id="mechanicalEfficiency" value="0.92" step="0.01" min="0.5" max="1" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Resistance (Advanced) -->
+        <div class="bg-white rounded-lg shadow p-4">
+          <button class="section-toggle w-full flex justify-between items-center text-left" data-section="resistance">
+            <h3 class="text-lg font-semibold text-gray-800">Filter Resistance (Advanced)</h3>
+            <svg class="w-5 h-5 transform transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div id="section-resistance" class="section-content hidden mt-4 space-y-4">
+            <div class="grid grid-cols-3 gap-4 text-sm">
+              <div class="font-medium">Type</div>
+              <div class="font-medium">Initial (Pa)</div>
+              <div class="font-medium">Final (Pa)</div>
+              <div>Media Filter</div>
+              <input type="number" id="mediaInitR" value="120" class="input-field rounded-md border-gray-300 shadow-sm text-sm">
+              <input type="number" id="mediaFinalR" value="450" class="input-field rounded-md border-gray-300 shadow-sm text-sm">
+              <div>MESP</div>
+              <input type="number" id="mespInitR" value="45" class="input-field rounded-md border-gray-300 shadow-sm text-sm">
+              <input type="number" id="mespFinalR" value="50" class="input-field rounded-md border-gray-300 shadow-sm text-sm">
+              <div>MESP+ESP</div>
+              <input type="number" id="mespEspInitR" value="50" class="input-field rounded-md border-gray-300 shadow-sm text-sm">
+              <input type="number" id="mespEspFinalR" value="65" class="input-field rounded-md border-gray-300 shadow-sm text-sm">
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-3">
+          <button id="calculateBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow transition">
+            Calculate ROI
+          </button>
+          <button id="downloadPdfBtn" class="flex-1 border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-3 px-6 rounded-lg transition" disabled>
+            Download PDF
+          </button>
+          <button id="shareBtn" class="border border-gray-300 text-gray-600 hover:bg-gray-50 font-semibold py-3 px-4 rounded-lg transition" disabled>
+            <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            Share
+          </button>
+          <button id="resetBtn" class="text-gray-500 hover:text-gray-700 font-medium py-3 px-4 transition">
+            <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div id="resultsSection" class="hidden space-y-4">
+        <!-- MESP Benefits Banner -->
+        <div class="bg-gradient-to-r from-[#0077B6] to-[#00B4D8] rounded-lg p-4 text-white">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+            <div class="feature-card bg-white/10 backdrop-blur rounded-lg p-3">
+              <svg class="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              <p class="text-xs font-medium">10-Year Lifespan</p>
+            </div>
+            <div class="feature-card bg-white/10 backdrop-blur rounded-lg p-3">
+              <svg class="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+              <p class="text-xs font-medium">Washable Filter</p>
+            </div>
+            <div class="feature-card bg-white/10 backdrop-blur rounded-lg p-3">
+              <svg class="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm5 15h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z"/></svg>
+              <p class="text-xs font-medium">99.99% Virus Kill</p>
+            </div>
+            <div class="feature-card bg-white/10 backdrop-blur rounded-lg p-3">
+              <svg class="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.92 6-4.72 7.28L13 17v5h5l-1.22-1.22C19.91 19.07 22 15.76 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.94 2.55 2 6.81 2 12c0 3.76 2.09 7.07 5.22 8.78L6 22h5v-5l-2.28 2.28C6.92 18 5 15.21 5 12c0-4.08 3.05-7.44 7-7.93V2.05z"/></svg>
+              <p class="text-xs font-medium">~20% Energy Save</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="stat-card bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-4 text-center">
+            <svg class="w-8 h-8 mx-auto mb-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-sm text-green-600 font-medium">10-Year Savings (MESP)</p>
+            <p id="totalSavings" class="text-2xl font-bold text-green-700">$0</p>
+          </div>
+          <div class="stat-card bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4 text-center">
+            <svg class="w-8 h-8 mx-auto mb-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-sm text-blue-600 font-medium">MESP Payback Period</p>
+            <p id="roiPeriod" class="text-2xl font-bold text-blue-700">0 years</p>
+          </div>
+          <div class="stat-card bg-gradient-to-br from-cyan-50 to-cyan-100 border border-cyan-200 rounded-lg p-4 text-center">
+            <svg class="w-8 h-8 mx-auto mb-2 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <p class="text-sm text-cyan-600 font-medium">Energy Saving Rate</p>
+            <p id="energySaving" class="text-2xl font-bold text-cyan-700">0%</p>
+          </div>
+          <div class="stat-card bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4 text-center">
+            <svg class="w-8 h-8 mx-auto mb-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <p class="text-sm text-purple-600 font-medium">MESP+ESP Payback</p>
+            <p id="roiPeriodEsp" class="text-2xl font-bold text-purple-700">0 years</p>
+          </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gradient-to-r from-[#0077B6] to-[#00B4D8]">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Item</th>
+                <th class="px-4 py-3 text-right text-xs font-medium text-white uppercase tracking-wider">Media Filter</th>
+                <th class="px-4 py-3 text-right text-xs font-medium text-white uppercase tracking-wider">MESP</th>
+                <th class="px-4 py-3 text-right text-xs font-medium text-white uppercase tracking-wider">MESP+ESP</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" id="resultsTable">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Charts -->
+        <div class="bg-white rounded-lg shadow p-4">
+          <div class="flex gap-2 mb-4">
+            <button class="chart-tab active px-4 py-2 text-sm font-medium rounded-lg bg-blue-100 text-blue-700" data-chart="comparison">
+              <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              Total Comparison
+            </button>
+            <button class="chart-tab px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100" data-chart="breakdown">
+              <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+              Cost Breakdown
+            </button>
+            <button class="chart-tab px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100" data-chart="timeline">
+              <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+              ROI Timeline
+            </button>
+          </div>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="mainChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-r from-[#1a1a2e] to-[#16213e] text-white mt-12">
+    <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <img src="assets/icons/eng_Logo.png" alt="AirQuality Technology" class="h-10 mx-auto mb-4 brightness-0 invert opacity-80">
+        <p class="text-sm text-gray-400 mb-2">This calculator is for estimation purposes only. Actual results may vary.</p>
+        <p class="text-sm text-gray-400">
+          <a href="https://www.airquality.com" target="_blank" class="hover:text-white">www.airquality.com</a> |
+          <a href="mailto:info@airquality.com" class="hover:text-white">info@airquality.com</a> |
+          +86 21 6139 7200
+        </p>
+        <p class="text-xs text-gray-500 mt-4">© 2024 AirQuality Technology. All rights reserved. | Take A Deep Breath.</p>
+      </div>
+    </div>
+  </footer>
+  </div><!-- End calculatorSection -->
+
+  <script src="js/utils.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/pdf-generator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
